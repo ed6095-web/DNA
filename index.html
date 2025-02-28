@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA Complement Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #9b9a96;
+            text-align: center;
+        }
+        header {
+            background: #000000;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        section {
+            background: white;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        input {
+            padding: 10px;
+            width: 60%;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        footer {
+            background: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        DNA Complement Finder
+    </header>
+    <section>
+        <h2>Find the Complementary DNA/RNA Strand</h2>
+        <input type="text" id="dnaInput" placeholder="Enter DNA/RNA Sequence (e.g., ATGC or AUGC)">
+        <button onclick="findComplement()">Find Complement</button>
+        <p><strong>Complementary Strand:</strong> <span id="dnaComplement"></span></p>
+        <h3>DNA/RNA Information</h3>
+        <p id="dnaInfo">Enter a sequence to get detailed information.</p>
+    </section>
+    <footer>
+        &copy; 2025 EASHAN DARSH
+    </footer>
+    <script>
+        function findComplement() {
+            let input = document.getElementById("dnaInput").value.toUpperCase();
+            let complement = "";
+            let valid = true;
+            let isRNA = false;
+            
+            // Complement rules
+            const complementMap = {
+                'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G', 'U': 'A'
+            };
+
+            for (let i = 0; i < input.length; i++) {
+                if (complementMap[input[i]]) {
+                    complement += complementMap[input[i]];
+                    if (input[i] === 'U') isRNA = true;
+                } else {
+                    valid = false;
+                    break;
+                }
+            }
+            
+            let result = document.getElementById("dnaComplement");
+            if (valid && input.length > 0) {
+                if (isRNA) {
+                    complement = complement.replace(/T/g, 'U'); // RNA uses Uracil instead of Thymine
+                }
+                result.innerText = complement;
+                displayDNAInfo(input);
+            } else {
+                result.innerText = "";
+                document.getElementById("dnaInfo").innerHTML = "<span class='error'>Invalid sequence. Only A, T, G, C (DNA) or A, U, G, C (RNA) allowed.</span>";
+            }
+        }
+        
+        function displayDNAInfo(sequence) {
+            const nucleotideInfo = {
+                "A": "Adenine (A): A purine base that pairs with Thymine (T) in DNA and Uracil (U) in RNA.",
+                "T": "Thymine (T): A pyrimidine base that pairs with Adenine (A) in DNA. It is replaced by Uracil (U) in RNA.",
+                "G": "Guanine (G): A purine base that pairs with Cytosine (C) in both DNA and RNA.",
+                "C": "Cytosine (C): A pyrimidine base that pairs with Guanine (G) in both DNA and RNA.",
+                "U": "Uracil (U): A pyrimidine base found only in RNA, pairing with Adenine (A)."
+            };
+            
+            let description = "<strong>DNA & RNA Information:</strong> DNA contains A, T, G, C, while RNA contains A, U, G, C.<br>"
+                + "In DNA, Adenine (A) pairs with Thymine (T), and Guanine (G) pairs with Cytosine (C).<br>"
+                + "In RNA, Thymine (T) is replaced by Uracil (U).<br><br>";
+
+            let sequenceInfo = "";
+            for (let i = 0; i < sequence.length; i++) {
+                if (nucleotideInfo[sequence[i]]) {
+                    sequenceInfo += sequence[i] + ": " + nucleotideInfo[sequence[i]] + "<br>";
+                }
+            }
+            
+            document.getElementById("dnaInfo").innerHTML = description + sequenceInfo;
+        }
+    </script>
+</body>
+</html>
